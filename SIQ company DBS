@@ -1,0 +1,189 @@
+CREATE DATABASE company_management;
+
+
+CREATE TABLE department(
+    department_id SERIAL PRIMARY KEY,
+    department_name VARCHAR(100) NOT NULL,
+    manager_name VARCHAR(100),
+    budget DECIMAL(10,2),
+
+);
+
+
+INSERT INTO departments(department_name,manager_name,budget)VALUES
+('IT','John Smith',500000.00),
+('HR','Elia Motwanamba',1200000.00),
+('Finance','Ndou Shumani',2000000.00),
+('Sales','Sam Samuel',120000.00),
+('Marketing','Jack Tails',300000.50);
+
+
+
+CREATE TABLE employees (
+    employee_id SERIAL PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    age INT,
+    email VARCHAR(100),
+    salary DECIMAL(10,2),
+    department_id INT REFERENCES department(department_id)
+);
+
+
+INSERT INTO employees (first_name, last_name, age, email, salary, department_id)
+VALUES
+('James', 'Miller', 28, 'james@email.com', 35000.00, 1),
+('Sophia', 'Taylor', 31, 'sophia@email.com', 42000.00, 2),
+('Daniel', 'Anderson', 26, 'daniel@email.com', 39000.00, 3),
+('Olivia', 'Thomas', 35, 'olivia@email.com', 50000.00, 4),
+('Liam', 'Jackson', 29, 'liam@email.com', 37000.00, 5);
+
+
+
+CREATE TABLE customers (
+    customer_id SERIAL PRIMARY KEY,
+    customer_name VARCHAR(100),
+    age INT,
+    phone VARCHAR(20),
+    city VARCHAR(100)
+);
+
+
+NSERT INTO customers (customer_name, age, phone, city)
+VALUES
+('Alice Green', 25, '0711111111', 'Johannesburg'),
+('Brian White', 32, '0722222222', 'Pretoria'),
+('Cynthia Black', 29, '0733333333', 'Cape Town'),
+('Derek Blue', 40, '0744444444', 'Durban'),
+('Eva Gray', 27, '0755555555', 'Polokwane');
+
+
+
+CREATE TABLE products (
+    product_id SERIAL PRIMARY KEY,
+    product_name VARCHAR(100),
+    price DECIMAL(10,2),
+    stock_quantity INT
+);
+
+
+INSERT INTO products (product_name, price, stock_quantity)
+VALUES
+('Laptop', 15000.00, 20),
+('Keyboard', 500.00, 100),
+('Mouse', 250.00, 150),
+('Monitor', 3000.00, 50),
+('Printer', 4500.00, 25);
+
+
+
+CREATE TABLE orders (
+    order_id SERIAL PRIMARY KEY,
+    customer_id INT REFERENCES customers(customer_id),
+    employee_id INT REFERENCES employees(employee_id),
+    order_date DATE,
+    total_amount DECIMAL(10,2)
+);
+
+
+INSERT INTO orders (customer_id, employee_id, order_date, total_amount)
+VALUES
+(1, 1, '2026-05-01', 15500.00),
+(2, 2, '2026-05-02', 500.00),
+(3, 3, '2026-05-03', 3250.00),
+(4, 4, '2026-05-04', 4500.00),
+(5, 5, '2026-05-05', 18000.00);
+
+
+
+CREATE TABLE suppliers (
+    supplier_id SERIAL PRIMARY KEY,
+    supplier_name VARCHAR(100),
+    contact_person VARCHAR(100),
+    phone VARCHAR(20),
+    city VARCHAR(100)
+);
+
+
+INSERT INTO suppliers (supplier_name, contact_person, phone, city)
+VALUES
+('TechSource', 'Robert King', '0761111111', 'Johannesburg'),
+('Digital World', 'Lucy Hall', '0762222222', 'Pretoria'),
+('Office Hub', 'Kevin Scott', '0763333333', 'Cape Town'),
+('Mega Electronics', 'Anna Lee', '0764444444', 'Durban'),
+('Future Tech', 'Peter Adams', '0765555555', 'Bloemfontein');
+
+
+
+CREATE TABLE inventory (
+    inventory_id SERIAL PRIMARY KEY,
+    product_id INT REFERENCES products(product_id),
+    supplier_id INT REFERENCES suppliers(supplier_id),
+    quantity_received INT,
+    received_date DATE
+);
+
+
+INSERT INTO inventory (product_id, supplier_id, quantity_received, received_date)
+VALUES
+(1, 1, 10, '2026-05-10'),
+(2, 2, 50, '2026-05-11'),
+(3, 3, 60, '2026-05-12'),
+(4, 4, 20, '2026-05-13'),
+(5, 5, 15, '2026-05-14');
+
+
+
+CREATE TABLE payments (
+    payment_id SERIAL PRIMARY KEY,
+    order_id INT REFERENCES orders(order_id),
+    payment_method VARCHAR(50),
+    payment_date DATE,
+    amount_paid DECIMAL(10,2)
+);
+
+
+INSERT INTO payments (order_id, payment_method, payment_date, amount_paid)
+VALUES
+(1, 'Credit Card', '2026-05-01', 15500.00),
+(2, 'Cash', '2026-05-02', 500.00),
+(3, 'EFT', '2026-05-03', 3250.00),
+(4, 'Credit Card', '2026-05-04', 4500.00),
+(5, 'EFT', '2026-05-05', 18000.00);
+
+
+
+CREATE TABLE attendance (
+    attendance_id SERIAL PRIMARY KEY,
+    employee_id INT REFERENCES employees(employee_id),
+    attendance_date DATE,
+    status VARCHAR(20)
+);
+
+
+INSERT INTO attendance (employee_id, attendance_date, status)
+VALUES
+(1, '2026-05-20', 'Present'),
+(2, '2026-05-20', 'Absent'),
+(3, '2026-05-20', 'Present'),
+(4, '2026-05-20', 'Present'),
+(5, '2026-05-20', 'Late');
+
+
+
+CREATE TABLE projects (
+    project_id SERIAL PRIMARY KEY,
+    project_name VARCHAR(100),
+    budget DECIMAL(10,2),
+    start_date DATE,
+    employee_id INT REFERENCES employees(employee_id)
+);
+
+
+INSERT INTO projects (project_name, budget, start_date, employee_id)
+VALUES
+('AI Sales System', 120000.00, '2026-01-10', 1),
+('Website Redesign', 80000.00, '2026-02-15', 2),
+('Cloud Migration', 200000.00, '2026-03-20', 3),
+('Cybersecurity Upgrade', 150000.00, '2026-04-05', 4),
+('Mobile App Development', 175000.00, '2026-05-01', 5);
